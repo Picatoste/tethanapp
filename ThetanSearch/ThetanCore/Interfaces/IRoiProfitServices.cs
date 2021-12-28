@@ -2,7 +2,7 @@
 
 namespace ThetanCore
 {
-  public interface IROIServices
+  public interface IRoiProfitServices
   {
     void FillRoi(IEnumerable<Thetan> thetans, IDictionary<string, double> convertCurrency);
   }

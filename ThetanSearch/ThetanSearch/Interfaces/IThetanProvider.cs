@@ -10,6 +10,7 @@ namespace ThetanSearch
         ThetanSkinRarity[] skinRarity = null, 
         ThetanHeroRole[] heroRole = null, 
         double? priceMinWNBNB = null, 
-        double? priceMaxWNBNB = null, int size = 10);
+        double? priceMaxWNBNB = null, 
+        int size = 10);
   }
 }

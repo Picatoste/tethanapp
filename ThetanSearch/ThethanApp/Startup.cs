@@ -35,7 +35,7 @@ namespace ThethanApp
 
 
       services.AddSingleton<ITokenPriceProvider, TokenPriceProvider>();
-      services.AddSingleton<IROIServices, ROIServices>();
+      services.AddSingleton<IRoiProfitServices, RoiProfitServices>();
       services.AddSingleton<IThetanProvider, ThetanProvider>();
       services.AddSingleton<IThetanServices, ThetanServices>();
       

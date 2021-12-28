@@ -6,10 +6,8 @@ using ThetanSearch;
 
 namespace ThetanCore
 {
-  public class ROIServices : IROIServices
+  public class RoiProfitServices : IRoiProfitServices
   {
-
-
     private const double HTCReward_Win = 6;
     private const double HTCReward_Draw = 2;
     private const double HTCReward_Lose = 1;
@@ -23,7 +21,7 @@ namespace ThetanCore
         { Rarity.Legendary, 23.55F },
       };
 
-    public ROIServices()
+    public RoiProfitServices()
     {
     }
 

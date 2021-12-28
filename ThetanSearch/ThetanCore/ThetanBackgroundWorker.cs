@@ -20,13 +20,13 @@ namespace ThetanCore
 
     private readonly ITokenPriceProvider tokenService;
     private readonly IThetanProvider thetanProvider;
-    private readonly IROIServices rOIServices;
+    private readonly IRoiProfitServices rOIServices;
     private readonly IMapper mapper;
 
     public ThetanHostedService(
         ITokenPriceProvider tokenService,
         IThetanProvider thetanProvider,
-        IROIServices rOIServices)
+        IRoiProfitServices rOIServices)
     {
       this.periodInSeconds = 5;
 
@@ -52,8 +52,10 @@ namespace ThetanCore
     private void DoWork(object state)
     {
       var count = Interlocked.Increment(ref executionCount);
+      
+      var thetansData = this.thetanProvider.GeThetans();
 
-      var thetansToInsert = mapper.Map<IEnumerable<ThetanData>, IEnumerable<Thetan>>(this.thetanProvider.GeThetans());
+      var thetansToInsert = mapper.Map<IEnumerable<ThetanData>, IEnumerable<Thetan>>(thetansData);
 
 
       var convertCurrency = this.tokenService.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
