@@ -21,18 +21,21 @@ namespace ThetanCore
     private readonly ITokenPriceProvider tokenService;
     private readonly IThetanProvider thetanProvider;
     private readonly IRoiProfitServices rOIServices;
+    private readonly IThetanNotification thetanNotification;
     private readonly IMapper mapper;
 
     public ThetanHostedService(
         ITokenPriceProvider tokenService,
         IThetanProvider thetanProvider,
-        IRoiProfitServices rOIServices)
+        IRoiProfitServices rOIServices,
+        IThetanNotification thetanNotification)
     {
       this.periodInSeconds = 5;
 
       this.tokenService = tokenService;
       this.thetanProvider = thetanProvider;
       this.rOIServices = rOIServices;
+      this.thetanNotification = thetanNotification;
 
       var config = new MapperConfiguration(cfg => {
         cfg.CreateMap<ThetanData, Thetan>();
@@ -61,6 +64,7 @@ namespace ThetanCore
       var convertCurrency = this.tokenService.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
       rOIServices.FillRoi(thetansToInsert, convertCurrency);
 
+      this.thetanNotification.Notify(thetansToInsert, "dabenito@gmail.com", 10F, 80F, 150F);
       SetThetans(thetansToInsert);
       
     }
