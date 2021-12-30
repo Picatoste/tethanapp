@@ -7,7 +7,7 @@
 }
 
 .single-chart {
-  width: 100px;
+  width: 80px;
   justify-content: space-around;
 }
 
@@ -64,6 +64,9 @@
   margin: 5px;
 }
 
+.rigth {
+  float: right;
+}
 
 .left {
   float: left;

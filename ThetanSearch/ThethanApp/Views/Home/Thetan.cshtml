@@ -15,7 +15,13 @@
 </p>
 <div class="table-responsive">
   <table class="table table-hover">
+  
     <thead>
+      <tr>
+        <th scope="col">
+          <p>filters</p>
+        </th>
+      </tr>
       <tr>
         <th scope="col">
           @Html.DisplayNameFor(model => model.Id)
@@ -31,10 +37,10 @@
             <table>
               <tr>
                 <td>
-                  <div style="font-size:0.9em">
+                  <div class="left" style="font-size:0.9em;margin: 20px; display:inline-block;">
                     <div>
                       <div class="left">
-                      <img class="rounded border" style="border-color:@(((GradeROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
+                        <img class="rounded border" style="border-color:@(((GradeROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
                       </div>
                       <div class="left" style="width:30px; margin:3px;">
                         <svg viewBox="0 0 10 10">
@@ -45,9 +51,9 @@
                         </svg>
                       </div>
                     </div>
-                    <div class="clear nowrap" style="font-size:1.1em">
+                    <div class="clear nowrap" style="font-size:1.1em; margin: 10px;">
                       <strong>@Html.DisplayFor(modelItem => thetan.Name)</strong>
-                      
+
                     </div>
                     <div class="nowrap">
                       <strong style="font-size:0.8em">@Html.DisplayNameFor(model => model.Roi50PerCent) : </strong> @((thetan.Roi50PerCent).ToString("0"))%
@@ -64,15 +70,15 @@
                       </div>
                     </div>
                   </div>
-                </td>
-                <td>
-                  <div>
+                  <div class="right" style="margin:10px; display:inline-block;">
                     <div style="font-size:0.6em">
                       @thetan.LastModifiedAgo
                     </div>
                     <div>
                       <strong style="font-size:1.2em">$@((thetan.PriceConverted).ToString("0.###"))</strong> (@((thetan.Price).ToString("0.###"))  WBNB)
                     </div>
+                  </div>
+                  <div class="right" style="margin:10px; display:inline;">
                     <div>
                       @foreach (var roi in thetan.ROIProfit)
                       {
