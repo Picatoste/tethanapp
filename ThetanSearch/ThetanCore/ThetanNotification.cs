@@ -9,6 +9,8 @@ using MailKit.Security;
 using MailKit.Net.Smtp;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using ThetanCore.Interfaces;
 
 namespace ThetanCore
 {
@@ -21,10 +23,14 @@ namespace ThetanCore
     private const string link_sign_symbol = "=?UTF-8?Q?=F0=9F=94=97?=";
     private readonly HashSet<Thetan> thetanNotified = new HashSet<Thetan>(new ThetanComparer());
 
-    private static ManualResetEvent mre = new ManualResetEvent(false);
-    public ThetanNotification()
-    {
 
+    private readonly SMTPConfig sMTPConfig;
+
+    private static ManualResetEvent mre = new ManualResetEvent(false);
+    public ThetanNotification(
+        IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig)
+    {
+      this.sMTPConfig = thetanEmailNotificationConfig.Value.SMTPConfig;
     }
     public bool Notify(IEnumerable<Thetan> thetansPendingProcess, string emailTo, double minPrice, double maxPrice, double minRoiProfit50Percent)
     {
@@ -42,45 +48,43 @@ namespace ThetanCore
       }
       return notify;
     }
-    //  <?xml version = "1.0" encoding="utf-8" ?>
-    //  <configuration>
-    //  <host>smtp.gmail.com</host>
-    //  <port>587</port>
-    //  <user>thetanmailer@gmail.com</user>
-    //  <password>thetanthetan</password>
-    //  <enableSsl>true</enableSsl>
-    // </configuration>
+    
     private bool SendEmail(string emailTo, Thetan thetan)
     {
       try
       {
         var email = new MimeMessage();
-        email.From.Add(MailboxAddress.Parse("thetanmailer@gmail.com"));
+        email.From.Add(MailboxAddress.Parse(sMTPConfig.User));
         email.To.Add(MailboxAddress.Parse(emailTo));
-        email.Subject = $"{ crossed_swords_symbol} NEW! { crossed_swords_symbol}| {chart_up_dollar_sign_symbol} : { thetan.Roi50PerCent.ToString("0") }% | ${ thetan.PriceConverted.ToString("0") } | {link_sign_symbol} { thetan.LinkMarket }";
+        email.Subject = $"{ crossed_swords_symbol} NEW! { crossed_swords_symbol}| {chart_up_dollar_sign_symbol} : { thetan.Roi50PerCent.ToString("0") }% / ${ thetan.ROIProfit.FirstOrDefault(x => x.WinRate == WinRateType.PerCent50)?.TotalProfit.ToString("0") }| ${ thetan.PriceConverted.ToString("0") }  |{link_sign_symbol} { thetan.LinkMarket }";
         email.Body = new TextPart(TextFormat.Html)
         {
           Text =
             $@"<h1>New { thetan.Name.ToUpperInvariant() } thetan notified! </h1>
-            <div style='float:left'>
+            <div style='float:left; margin:5px;'>
               <img width='100' height='100' src='{ thetan.avatarSmall}' alt='Image' />
             </div>
-            <div style='float:left'>
-            <strong>ROI50</strong> { thetan.Roi50PerCent }%
+            <div style='float:left;margin:5px;'>
+            <div style='clear:both;float:left'>
+            <strong>ROI50 %</strong> { thetan.Roi50PerCent.ToString("0") }%
             </div>
-            <div style='float:left'>
+            <div style='clear:both;float:left'>
+            <strong>ROI50 TotalProfit</strong> ${ thetan.ROIProfit.FirstOrDefault(x => x.WinRate == WinRateType.PerCent50)?.TotalProfit.ToString("0")}
+            </div>
+            <div style='clear:both;float:left'>
             <strong>Price</strong> ${ thetan.PriceConverted }
             </div>
-            <div style='float:left'>
+            <div style='clear:both;float:left'>
             <strong>Link</strong> { thetan.LinkMarket.ToString() } 
+            </div>
             </div>"
         };
 
         // send email
         using (var smtp = new SmtpClient())
         {
-          smtp.Connect("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
-          smtp.Authenticate("thetanmailer@gmail.com", "thetanthetan");
+          smtp.Connect(sMTPConfig.Host, sMTPConfig.Port, (sMTPConfig.EnableSSL) ? SecureSocketOptions.StartTls : SecureSocketOptions.None);
+          smtp.Authenticate(sMTPConfig.User, sMTPConfig.Password);
           smtp.Send(email);
           smtp.Disconnect(true);
         }

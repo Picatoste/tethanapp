@@ -20,8 +20,8 @@ namespace ThetanSearch
     {
       var dictTokenPrices = new Dictionary<string, double>();
 #if DEBUG
-      dictTokenPrices.Add("thetan-coin", 0.153063377378091);
-      dictTokenPrices.Add("wbnb", 565.6778192667911);
+      dictTokenPrices.Add("thetan-coin", 0.1341);
+      dictTokenPrices.Add("wbnb", 519.91);
 #else
       foreach (var slug in slugs)
       {

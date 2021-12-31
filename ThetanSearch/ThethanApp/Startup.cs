@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ThetanCore;
+using ThetanCore.Interfaces;
 using ThetanSearch;
 
 namespace ThethanApp
@@ -33,6 +34,12 @@ namespace ThethanApp
         options.MinimumSameSitePolicy = SameSiteMode.None;
       });
 
+
+      services.AddOptions();
+
+      services.Configure<ThetanConfig>(Configuration.GetSection("ThetanConfig"));
+      services.Configure<ThetanHostedServiceConfig>(Configuration.GetSection("ThetanHostedServiceConfig"));
+      services.Configure<ThetanEmailNotificationConfig>(Configuration.GetSection("ThetanEmailNotificationConfig"));
 
       services.AddSingleton<IThetanNotification, ThetanNotification>();
       services.AddSingleton<ITokenPriceProvider, TokenPriceProvider>();

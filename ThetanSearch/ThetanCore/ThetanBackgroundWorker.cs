@@ -7,6 +7,8 @@ using LiteDB;
 using ThetanSearch;
 using AutoMapper;
 using ThethanCore.Mappers;
+using Microsoft.Extensions.Options;
+using ThetanCore.Interfaces;
 
 namespace ThetanCore
 {
@@ -16,26 +18,38 @@ namespace ThetanCore
     private int executionCount = 0;
     private Timer _timer = null;
     private readonly double periodInSeconds;
+    private readonly bool enabled;
 
 
     private readonly ITokenPriceProvider tokenService;
     private readonly IThetanProvider thetanProvider;
     private readonly IRoiProfitServices rOIServices;
     private readonly IThetanNotification thetanNotification;
+    private readonly IOptions<ThetanConfig> thetanConfig;
+    private readonly IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig;
+
+    //private readonly IOptions<ThetanHostedServiceConfig> thetanHostedServiceConfig;
     private readonly IMapper mapper;
 
     public ThetanHostedService(
         ITokenPriceProvider tokenService,
         IThetanProvider thetanProvider,
         IRoiProfitServices rOIServices,
-        IThetanNotification thetanNotification)
+        IThetanNotification thetanNotification,
+        IOptions<ThetanConfig> thetanConfig,
+        IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig,
+        IOptions<ThetanHostedServiceConfig> thetanHostedServiceConfig)
     {
-      this.periodInSeconds = 5;
+      this.periodInSeconds = thetanHostedServiceConfig.Value.PeriodInSeconds;
+      this.enabled = thetanHostedServiceConfig.Value.Enabled;
 
       this.tokenService = tokenService;
       this.thetanProvider = thetanProvider;
       this.rOIServices = rOIServices;
       this.thetanNotification = thetanNotification;
+      this.thetanConfig = thetanConfig;
+      this.thetanEmailNotificationConfig = thetanEmailNotificationConfig;
+      //this.thetanHostedServiceConfig = thetanHostedServiceConfig;
 
       var config = new MapperConfiguration(cfg => {
         cfg.CreateMap<ThetanData, Thetan>();
@@ -47,8 +61,10 @@ namespace ThetanCore
 
     public Task StartAsync(CancellationToken stoppingToken)
     {
-      _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(periodInSeconds));
-
+      if (enabled)
+      {
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromSeconds(periodInSeconds));
+      }
       return Task.CompletedTask;
     }
 
@@ -64,7 +80,7 @@ namespace ThetanCore
       var convertCurrency = this.tokenService.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
       rOIServices.FillRoi(thetansToInsert, convertCurrency);
 
-      this.thetanNotification.Notify(thetansToInsert, "dabenito@gmail.com", 10F, 80F, 150F);
+      this.thetanNotification.Notify(thetansToInsert, this.thetanEmailNotificationConfig.Value.EmailTo, 5F, 75F, 150F);
       SetThetans(thetansToInsert);
       
     }
@@ -83,7 +99,7 @@ namespace ThetanCore
 
     public void SetThetans(IEnumerable<Thetan> thetans, int afterHours = 1)
     { 
-      string fileDb = @"C:\Temp\Thetans.db";
+      string fileDb = this.thetanConfig.Value.LiteDbFilePath;
       lock (fileDb)
       {
         using (var db = new LiteDatabase(fileDb))

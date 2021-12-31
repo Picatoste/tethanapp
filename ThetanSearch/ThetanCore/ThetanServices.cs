@@ -1,23 +1,20 @@
-﻿using AutoMapper;
-using LiteDB;
-using System;
+﻿using LiteDB;
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using ThetanCore.Interfaces;
 using ThetanSearch;
-using ThethanCore.Mappers;
 
 namespace ThetanCore
 {
 
   public class ThetanServices : IThetanServices
   {
-    private readonly IThetanProvider thetanProvider;
+    private readonly IOptions<ThetanConfig> thetanConfig;
+
     public ThetanServices(
-        IThetanProvider thetanProvider)
+        IOptions<ThetanConfig> thetanConfig)
     {
-      this.thetanProvider = thetanProvider;
-      
+      this.thetanConfig = thetanConfig;
     }
 
     public IEnumerable<Thetan> GetThetans()
@@ -29,7 +26,7 @@ namespace ThetanCore
 
     public IEnumerable<Thetan> GetAllThetans(int afterHours = 1)
     {
-      string fileDb = @"C:\Temp\Thetans.db";
+      string fileDb = thetanConfig.Value.LiteDbFilePath;
       lock (fileDb)
       {
         using (var db = new LiteDatabase(fileDb))

@@ -74,3 +74,10 @@
 .clear {
   clear: both;
 }
+
+.card {
+  width:25%; 
+  min-width:300px; 
+  float:left; 
+  margin:10px;
+}
