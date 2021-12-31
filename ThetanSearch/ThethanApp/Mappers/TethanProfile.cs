@@ -16,43 +16,43 @@ namespace ThethanApp.Mappers
     {
       CreateMap<Thetan, ThetanModel>()
       .ForMember(dest => dest.LastModifiedAgo, opt => opt.MapFrom(src => GetTimeAgo(src.LastModified)))
-      .ForMember(dest => dest.Roi50PerCentGrade, opt => opt.MapFrom(src => GetGradeRoi(src.Roi50PerCent)));
+      .ForMember(dest => dest.Roi50PerCentGrade, opt => opt.MapFrom(src => GetTierROI(src.Roi50PerCent)));
       CreateMap<ROIProfit, ROIProfitModel>();
     }
 
-    private GradeROI GetGradeRoi(double RoiGrade)
+    private TierROI GetTierROI(double tierROI)
     {
-      if (RoiGrade <= 0)
+      if (tierROI <= 0)
       {
-        return GradeROI.E;
+        return TierROI.F;
       }
-      else if (RoiGrade > 0 && RoiGrade <= 50)
+      else if (tierROI > 0 && tierROI <= 50)
       {
-        return GradeROI.D;
+        return TierROI.E;
       }
-      else if (RoiGrade > 50 && RoiGrade <= 100)
+      else if (tierROI > 50 && tierROI <= 100)
       {
-        return GradeROI.C;
+        return TierROI.D;
       }
-      else if (RoiGrade > 100 && RoiGrade <= 115)
+      else if (tierROI > 100 && tierROI <= 115)
       {
-        return GradeROI.B;
+        return TierROI.C;
       }
-      else if (RoiGrade > 115 && RoiGrade <= 135)
+      else if (tierROI > 115 && tierROI <= 135)
       {
-        return GradeROI.BPlus;
+        return TierROI.B;
       }
-      else if (RoiGrade > 135 && RoiGrade <= 200)
+      else if (tierROI > 135 && tierROI <= 200)
       {
-        return GradeROI.A;
+        return TierROI.A;
       }
-      else if (RoiGrade > 200)
+      else if (tierROI > 200)
       {
-        return GradeROI.APlus;
+        return TierROI.S;
       }
       else
       {
-        return GradeROI.Error;
+        return TierROI.Error;
       } 
     }
 

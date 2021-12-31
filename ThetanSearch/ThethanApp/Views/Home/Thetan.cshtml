@@ -23,62 +23,62 @@
     }
     @foreach (var thetan in Model)
     {
-      <div class="card">
-        <div class="card-body">
-          <div class="clear rigth" style="font-size:0.7em;">
-            #@(i++)
+    <div class="card">
+      <div class="card-body">
+        <div class="clear rigth" style="font-size:0.7em;">
+          #@(i++)
+        </div>
+        <div class="left">
+          <img class="rounded border" style="border-color:@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
+        </div>
+        <div class="left" style="width:30px; margin:3px;">
+          <svg viewBox="0 0 10 10">
+            <g>
+              <rect x="0" y="0" width="10" height="10" fill="@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description))"></rect>
+              <text x="5" y="8" class="percentage">@((thetan.Roi50PerCentGrade).ToString())</text>
+            </g>
+          </svg>
+        </div>
+        <div class="left nowrap" style="font-size:1.1em; margin: 5px;">
+          <strong>@Html.DisplayFor(modelItem => thetan.Name)</strong>
+        </div>
+        <div class="clear left nowrap">
+          <div class="nowrap">
+            <strong style="font-size:0.8em">@Html.DisplayNameFor(model => model.Roi50PerCent) : </strong> @((thetan.Roi50PerCent).ToString("0"))%
           </div>
-          <div class="left">
-            <img class="rounded border" style="border-color:@(((GradeROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
+          <div class="nowrap">
+            <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCap) : </strong>@Html.DisplayFor(modelItem => thetan.BattleCap)
           </div>
-          <div class="left" style="width:30px; margin:3px;">
-            <svg viewBox="0 0 10 10">
-              <g>
-                <rect x="0" y="0" width="10" height="10" fill="@(((GradeROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description))"></rect>
-                <text x="5" y="8" class="percentage">@((thetan.Roi50PerCentGrade).ToString().Replace("Plus", "+"))</text>
-              </g>
-            </svg>
+          <div class="nowrap">
+            <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCapMax) : </strong> @(thetan.BattleCapMax - thetan.BattleCap) / @Html.DisplayFor(modelItem => thetan.BattleCapMax)
           </div>
-          <div class="left nowrap" style="font-size:1.1em; margin: 5px;">
-            <strong>@Html.DisplayFor(modelItem => thetan.Name)</strong>
+          <div class="nowrap">
+            <div class="margin-5">
+              <button type="button" class="btn btn-primary" onclick="window.open('@Html.DisplayFor(modelItem => thetan.LinkMarket)')"> @Html.DisplayNameFor(model => model.LinkMarket)</button>
+              <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseDetails_@i" aria-expanded="false" aria-controls="collapseDetails_@i">ROI Details</button>
+            </div>
           </div>
-          <div class="clear left nowrap">
-            <div class="nowrap">
-              <strong style="font-size:0.8em">@Html.DisplayNameFor(model => model.Roi50PerCent) : </strong> @((thetan.Roi50PerCent).ToString("0"))%
-            </div>
-            <div class="nowrap">
-              <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCap) : </strong>@Html.DisplayFor(modelItem => thetan.BattleCap)
-            </div>
-            <div class="nowrap">
-              <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCapMax) : </strong> @(thetan.BattleCapMax - thetan.BattleCap) / @Html.DisplayFor(modelItem => thetan.BattleCapMax)
-            </div>
-            <div class="nowrap">
-              <div class="margin-5">
-                <button type="button" class="btn btn-primary" onclick="window.open('@Html.DisplayFor(modelItem => thetan.LinkMarket)')"> @Html.DisplayNameFor(model => model.LinkMarket)</button>
-                <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseDetails_@i" aria-expanded="false" aria-controls="collapseDetails_@i">ROI Details</button>
-              </div>
-            </div>
           </div>
         </div>
-        <div class="card-footer">
-          <div class="right" style="margin:10px; display:inline-block;">
-            <div style="font-size:0.6em">
-              @thetan.LastModifiedAgo
-            </div>
-            <div>
-              <strong style="font-size:1.2em">$@((thetan.PriceConverted).ToString("0.###"))</strong> (@((thetan.Price).ToString("0.###"))  WBNB)
-            </div>
+      <div class="card-footer">
+        <div class="right" style="margin:10px; display:inline-block;">
+          <div style="font-size:0.6em">
+            @thetan.LastModifiedAgo
           </div>
-          <div class="right" style="margin:10px; display:inline;">
-            <div class="collapse" id="collapseDetails_@i">
-              @foreach (var roi in thetan.ROIProfit)
-              {
-                Html.RenderPartial("_RoiProfitByWinRatePartial", roi);
-              }
-            </div>
+          <div>
+            <strong style="font-size:1.2em">$@((thetan.PriceConverted).ToString("0.###"))</strong> (@((thetan.Price).ToString("0.###"))  WBNB)
+          </div>
+        </div>
+        <div class="right" style="margin:10px; display:inline;">
+          <div class="collapse" id="collapseDetails_@i">
+            @foreach (var roi in thetan.ROIProfit)
+            {
+              Html.RenderPartial("_RoiProfitByWinRatePartial", roi);
+            }
           </div>
         </div>
       </div>
+    </div>
     }
   </div>
 </div>

@@ -31,26 +31,26 @@ namespace ThethanApp.Models
     public string LastModifiedAgo { get; set; }
     [Display(Name = "ROI (50% WinRate)")]
     public double Roi50PerCent { get; set; }
-    public GradeROI Roi50PerCentGrade { get; set; }
+    public TierROI Roi50PerCentGrade { get; set; }
   }
-  public enum GradeROI
+  public enum TierROI
   {
-    [Description("black")]
+    [Description("white")]
     Error,
-    [Description("red")]
+    [Description("#FF7EFD")]
+    F,
+    [Description("#807FFE")]
     E,
-    [Description("red")]
+    [Description("#7FBFFD")]
     D,
-    [Description("tomato")]
+    [Description("#7EFF80")]
     C,
-    [Description("skyblue")]
+    [Description("#FFFB7C")]
     B,
-    [Description("skyblue")]
-    BPlus,
-    [Description("yellowgreen")]
+    [Description("#FFBD80")]
     A,
-    [Description("yellowgreen")]
-    APlus
+    [Description("#FD7E7D")]
+    S
   }
   public class ROIProfitModel
   {

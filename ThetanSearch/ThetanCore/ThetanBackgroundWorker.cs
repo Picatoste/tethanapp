@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
@@ -84,7 +85,8 @@ namespace ThetanCore
       {
         return thetan.PriceConverted >= 5F
             && thetan.PriceConverted <= 75F
-            && thetan.Roi50PerCent >= 150;
+            && thetan.Roi50PerCent >= 150
+            && thetan.ROIProfit.First(x => x.WinRate == WinRateType.PerCent30).IsPositive;
       });
       SetThetans(thetansToInsert);
       

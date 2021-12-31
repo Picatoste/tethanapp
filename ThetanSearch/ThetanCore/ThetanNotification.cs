@@ -74,6 +74,9 @@ namespace ThetanCore
             <div style='clear:both;float:left'>
             <strong>Link</strong> { thetan.LinkMarket.ToString() } 
             </div>
+            <div style='clear:both;float:left'>
+            ROI 30% in this thetan is POSITIVE (<strong>ROI30 Total Profit</strong>: ${ thetan.ROIProfit.FirstOrDefault(x => x.WinRate == WinRateType.PerCent30)?.TotalProfit.ToString("0")}).
+            </div>
             </div>"
         };
 
