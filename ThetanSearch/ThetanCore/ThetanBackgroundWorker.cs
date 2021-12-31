@@ -80,7 +80,12 @@ namespace ThetanCore
       var convertCurrency = this.tokenService.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
       rOIServices.FillRoi(thetansToInsert, convertCurrency);
 
-      this.thetanNotification.Notify(thetansToInsert, this.thetanEmailNotificationConfig.Value.EmailTo, 5F, 75F, 150F);
+      this.thetanNotification.Notify(thetansToInsert, this.thetanEmailNotificationConfig.Value.EmailTo, (Thetan thetan) =>
+      {
+        return thetan.PriceConverted >= 5F
+            && thetan.PriceConverted <= 75F
+            && thetan.Roi50PerCent >= 150;
+      });
       SetThetans(thetansToInsert);
       
     }

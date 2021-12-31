@@ -32,13 +32,10 @@ namespace ThetanCore
     {
       this.sMTPConfig = thetanEmailNotificationConfig.Value.SMTPConfig;
     }
-    public bool Notify(IEnumerable<Thetan> thetansPendingProcess, string emailTo, double minPrice, double maxPrice, double minRoiProfit50Percent)
+    public bool Notify(IEnumerable<Thetan> thetansPendingProcess, string emailTo, Func<Thetan, bool> predicateWhere)
     {
       bool notify = true;
-      var thetansCandidateToNotify = thetansPendingProcess.Where(thetan =>
-          thetan.PriceConverted >= minPrice
-          && thetan.PriceConverted <= maxPrice
-          && thetan.Roi50PerCent >= minRoiProfit50Percent);
+      var thetansCandidateToNotify = thetansPendingProcess.Where(predicateWhere);
 
       foreach (Thetan thetanToNotify in thetansCandidateToNotify.Where(thetan => !this.thetanNotified.Contains(thetan)))
       {
