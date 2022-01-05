@@ -21,6 +21,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200;400&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P:wght@200;400&display=swap" rel="stylesheet">
+
+
+  @inject Microsoft.Extensions.Configuration.IConfiguration configuration
+  @using Microsoft.Extensions.Configuration
+  @{
+    var code = configuration.GetValue<string>("GoogleAnalytics");
+    var gtag = $"https://www.googletagmanager.com/gtag/js?id={code}";
+  }
+  @*Global site tag(gtag.js) - Google Analytics*@
+  <environment exclude="Development">
+    <script async src="@gtag"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', '@code');
+    </script>
+  </environment>
+
 </head>
 <body>
   <header>
@@ -37,10 +56,10 @@
               <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Thetan">Thetan search</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Thetan">Thetan</a>
+              <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
             </li>
           </ul>
         </div>

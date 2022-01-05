@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
-using EnumsNET;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ThetanCore;
-using ThetanSearch;
 using ThethanApp.Models;
 
 namespace ThethanApp.Mappers

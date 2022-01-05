@@ -1,14 +1,13 @@
-﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Threading;
-using System.Collections.Generic;
-using ThetanSearch;
-using AutoMapper;
-using ThethanCore.Mappers;
+﻿using AutoMapper;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using ThetanCore.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using ThetanSearch;
+using ThethanCore;
 
 namespace ThetanCore
 {
@@ -22,18 +21,18 @@ namespace ThetanCore
     private readonly bool enabled;
 
 
-    private readonly ITokenPriceProvider tokenService;
-    private readonly IThetanProvider thetanProvider;
-    private readonly IRoiProfitServices rOIServices;
+    private readonly ITokenAPIPriceProvider tokenService;
+    private readonly IThetanAPIProvider thetanProvider;
+    private readonly IThetanRoiProfitServices rOIServices;
     private readonly IThetanNotification thetanNotification;
     private readonly IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig;
 
     private readonly IMapper mapper;
 
     public ThetanHostedService(
-        ITokenPriceProvider tokenService,
-        IThetanProvider thetanProvider,
-        IRoiProfitServices rOIServices,
+        ITokenAPIPriceProvider tokenService,
+        IThetanAPIProvider thetanProvider,
+        IThetanRoiProfitServices rOIServices,
         IThetanNotification thetanNotification,
         IOptions<ThetanConfig> thetanConfig,
         IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig,

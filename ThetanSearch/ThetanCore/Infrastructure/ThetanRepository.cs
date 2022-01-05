@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System;
-using ThetanCore.Interfaces;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 

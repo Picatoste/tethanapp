@@ -6,12 +6,12 @@ using System.Collections.Generic;
 
 namespace ThetanSearch
 {
-  public class TokenPriceProvider : ITokenPriceProvider
+  public class TokenAPIPriceProvider : ITokenAPIPriceProvider
   {
     private const string BaseUrl = "https://pro-api.coinmarketcap.com/v1/";
     private readonly IList<TokenPriceData> distTokenPriceData;
 
-    public TokenPriceProvider()
+    public TokenAPIPriceProvider()
     {
       this.distTokenPriceData = new List<TokenPriceData>();
     }

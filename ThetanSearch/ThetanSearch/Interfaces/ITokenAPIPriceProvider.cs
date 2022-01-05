@@ -2,7 +2,7 @@
 
 namespace ThetanSearch
 {
-  public interface ITokenPriceProvider
+  public interface ITokenAPIPriceProvider
   {
     IDictionary<string, double> GetListCurrencyToken(string[] slugs, string currency = "USD");
   }

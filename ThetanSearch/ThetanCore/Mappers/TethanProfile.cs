@@ -1,18 +1,15 @@
 ﻿using AutoMapper;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ThetanCore;
 using ThetanSearch;
 
-namespace ThethanCore.Mappers
+namespace ThethanCore
 {
   public class TethanProfile : Profile
   {
     private readonly IDictionary<string, double> dictCurrency;
     public TethanProfile(
-        ITokenPriceProvider tokenProvider) : base()
+        ITokenAPIPriceProvider tokenProvider) : base()
     {
       this.dictCurrency = tokenProvider.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
 

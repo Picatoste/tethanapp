@@ -2,7 +2,7 @@
 
 namespace ThetanCore
 {
-  public interface IThetanServices
+  public interface IThetanProvider
   {
     IEnumerable<Thetan> GetAllThetans(int afterHours = 1);
   }

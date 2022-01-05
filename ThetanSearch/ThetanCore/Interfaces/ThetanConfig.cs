@@ -1,4 +1,4 @@
-﻿namespace ThetanCore.Interfaces
+﻿namespace ThetanCore
 {
   public class SMTPConfig
   {

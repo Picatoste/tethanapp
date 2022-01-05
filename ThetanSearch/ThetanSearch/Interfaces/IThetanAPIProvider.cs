@@ -2,7 +2,7 @@
 
 namespace ThetanSearch
 {
-  public interface IThetanProvider
+  public interface IThetanAPIProvider
   {
     IEnumerable<ThetanData> GeThetans(
         ThetanSortType sort = ThetanSortType.Latest, 

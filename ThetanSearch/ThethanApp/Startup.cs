@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ThetanCore;
-using ThetanCore.Interfaces;
 using ThetanSearch;
 
 namespace ThethanApp
@@ -42,10 +37,10 @@ namespace ThethanApp
       services.Configure<ThetanEmailNotificationConfig>(Configuration.GetSection("ThetanEmailNotificationConfig"));
 
       services.AddSingleton<IThetanNotification, ThetanNotification>();
-      services.AddSingleton<ITokenPriceProvider, TokenPriceProvider>();
-      services.AddSingleton<IRoiProfitServices, RoiProfitServices>();
+      services.AddSingleton<ITokenAPIPriceProvider, TokenAPIPriceProvider>();
+      services.AddSingleton<IThetanRoiProfitServices, ThetanRoiProfitServices>();
+      services.AddSingleton<IThetanAPIProvider, ThetanAPIProvider>();
       services.AddSingleton<IThetanProvider, ThetanProvider>();
-      services.AddSingleton<IThetanServices, ThetanServices>();
       services.AddSingleton<IThetanRepository, ThetanRepository>();
       services.AddSingleton<IDictionary<string, Thetan>, ThethanDBDictionary>();
 

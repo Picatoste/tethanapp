@@ -1,10 +1,8 @@
-﻿using System;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using ThetanCore;
 using ThetanSearch;
 using ThethanApp.Mappers;
@@ -14,9 +12,9 @@ namespace ThethanApp.Controllers
 {
   public class HomeController : Controller
   {
-    private readonly IThetanServices thetanServices;
+    private readonly IThetanProvider thetanServices;
 
-    public HomeController(IThetanServices thetanServices)
+    public HomeController(IThetanProvider thetanServices)
     {
       this.thetanServices = thetanServices;
     }
@@ -29,7 +27,6 @@ namespace ThethanApp.Controllers
     {
       return View();
     }
-
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Thetan()

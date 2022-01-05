@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace ThetanCore
 {
-  public class RoiProfitServices : IRoiProfitServices
+  public class ThetanRoiProfitServices : IThetanRoiProfitServices
   {
     private const double HTCReward_Win = 6;
     private const double HTCReward_Draw = 2;
@@ -19,7 +19,7 @@ namespace ThetanCore
         { Rarity.Legendary, 23.55F },
       };
 
-    public RoiProfitServices()
+    public ThetanRoiProfitServices()
     {
     }
 

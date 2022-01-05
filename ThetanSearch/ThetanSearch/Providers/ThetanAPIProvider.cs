@@ -8,7 +8,7 @@ namespace ThetanSearch
 {
 
 
-  public class ThetanProvider : IThetanProvider
+  public class ThetanAPIProvider : IThetanAPIProvider
   {
     private const string BaseUrl = "https://data.thetanarena.com/";
 
