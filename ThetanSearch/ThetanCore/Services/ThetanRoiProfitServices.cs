@@ -52,13 +52,13 @@ namespace ThetanCore
     {
       double totalWinBattles = Convert.ToInt32(thetan.BattleCap * ((double)rate / 10));
       double totalLoseBattles = thetan.BattleCap - totalWinBattles;
-      double totalTHCWin = totalWinBattles * (HTCReward_Win + HTCReward_WinBonus[thetan.Rarity]);
-      double revenueWin = totalTHCWin * convertCurrency["thetan-coin"];
+      double totalWinTHC = totalWinBattles * (HTCReward_Win + HTCReward_WinBonus[thetan.Rarity]);
+      double revenueWin = totalWinTHC * convertCurrency["thetan-coin"];
 
-      double totalTHCLose = totalLoseBattles * HTCReward_Lose;
-      double revenueLose = totalTHCLose * convertCurrency["thetan-coin"];
+      double totalLoseTHC = totalLoseBattles * HTCReward_Lose;
+      double revenueLose = totalLoseTHC * convertCurrency["thetan-coin"];
 
-      double totalTHC = totalTHCWin + totalTHCLose;
+      double totalTHC = totalWinTHC + totalLoseTHC;
       double claimFee = (totalTHC * 0.04) * convertCurrency["thetan-coin"];
 
       double revenueTotal = revenueWin + revenueLose ;
@@ -73,7 +73,15 @@ namespace ThetanCore
         IsPositive = totalProfitWithClaimFee >= 0,
         TotalRevenue = revenueTotalWithClaimFee,
         TotalProfit = totalProfitWithClaimFee,
-        
+        TotalWinBattles = totalWinBattles,
+        TotalLoseBattles = totalLoseBattles,
+        TotalWinTHC = totalWinTHC,
+        TotalLoseTHC = totalLoseTHC,
+        TotalTHC = totalTHC,
+        RevenueWin = revenueWin,
+        RevenueLose = revenueLose,
+        ClaimFee = claimFee
+
       };
     }
   }
