@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
-//using LiteDB;
 using ThetanSearch;
 using AutoMapper;
 using ThethanCore.Mappers;
@@ -14,10 +13,8 @@ using ThetanCore.Interfaces;
 namespace ThetanCore
 {
   public class ThetanHostedService : IHostedService, IDisposable
-  {
-
+  { 
     private readonly object notifyLock = new object();
-
     private readonly Task _completedTask = Task.CompletedTask;
     private int executionCount = 0;
     private Timer _timer = null;
@@ -29,7 +26,6 @@ namespace ThetanCore
     private readonly IThetanProvider thetanProvider;
     private readonly IRoiProfitServices rOIServices;
     private readonly IThetanNotification thetanNotification;
-    private readonly IOptions<ThetanConfig> thetanConfig;
     private readonly IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig;
 
     private readonly IMapper mapper;
@@ -50,7 +46,6 @@ namespace ThetanCore
       this.thetanProvider = thetanProvider;
       this.rOIServices = rOIServices;
       this.thetanNotification = thetanNotification;
-      this.thetanConfig = thetanConfig;
       this.thetanEmailNotificationConfig = thetanEmailNotificationConfig;
 
       var config = new MapperConfiguration(cfg => {
@@ -91,8 +86,6 @@ namespace ThetanCore
               && thetan.ROIProfit.First(x => x.WinRate == WinRateType.PerCent30).IsPositive;
         });
       }
-      //SetThetans(thetansToInsert);
-      
     }
 
     public Task StopAsync(CancellationToken stoppingToken)
@@ -106,25 +99,5 @@ namespace ThetanCore
     {
       _timer?.Dispose();
     }
-
-    //public void SetThetans(IEnumerable<Thetan> thetans, int afterHours = 1)
-    //{ 
-    //  string fileDb = this.thetanConfig.Value.LiteDbFilePath;
-    //  lock (fileDb)
-    //  {
-    //    using (var db = new LiteDatabase(fileDb))
-    //    {
-    //      // Get a collection (or create, if doesn't exist)
-    //      var col = db.GetCollection<Thetan>("thetans");
-
-    //      // Index document using document Name property
-    //      col.EnsureIndex(x => x.Id);
-    //      col.DeleteMany(x => 
-    //        x.LastModified.ToUniversalTime().AddHours(afterHours) < DateTime.UtcNow
-    //      );
-    //      col.Upsert(thetans);
-    //    }
-    //  }
-    //}
   }
 }

@@ -1,4 +1,4 @@
-﻿//using LiteDB;
+﻿using LiteDB;
 using System.Linq;
 using System.Collections.Generic;
 using ThetanSearch;
@@ -6,7 +6,8 @@ using System;
 using ThetanCore.Extensions;
 using AutoMapper;
 using ThethanCore.Mappers;
-using System.Collections.Concurrent;
+using ThetanCore.Interfaces;
+using Microsoft.Extensions.Options;
 
 namespace ThetanCore
 {
@@ -23,30 +24,14 @@ namespace ThetanCore
     public ThetanServices(
         ITokenPriceProvider tokenService,
         IThetanProvider thetanProvider,
-        IRoiProfitServices roiProfitServices)
+        IRoiProfitServices roiProfitServices, 
+        IOptions<ThetanConfig> thetanConfig,
+        IDictionary<string, Thetan> thetansSaved)
     {
       this.tokenPriceProvider = tokenService;
       this.thetanProvider = thetanProvider;
       this.roiProfitServices = roiProfitServices;
-
-      //// We know how many items we want to insert into the ConcurrentDictionary.
-      //// So set the initial capacity to some prime number above that, to ensure that
-      //// the ConcurrentDictionary does not need to be resized while initializing it.
-      //int initialCapacity = 101;
-
-      //// The higher the concurrencyLevel, the higher the theoretical number of operations
-      //// that could be performed concurrently on the ConcurrentDictionary.  However, global
-      //// operations like resizing the dictionary take longer as the concurrencyLevel rises.
-      //// For the purposes of this example, we'll compromise at numCores * 2.
-      //int numProcs = Environment.ProcessorCount;
-      //int concurrencyLevel = numProcs * 2;
-
-
-      //this.thetansSaved = new ConcurrentDictionary<string, Thetan>(concurrencyLevel, initialCapacity);
-
-      //this.thetansSaved = new ConcurrentDictionary<string, Thetan>();
-
-      this.thetansSaved = new Dictionary<string, Thetan>();
+      this.thetansSaved = thetansSaved;
 
 
       var config = new MapperConfiguration(cfg =>
@@ -119,47 +104,9 @@ namespace ThetanCore
 
         if(addThetan)
         {
-          //thetanCandidateAdd.LastModified = TimeZoneInfo.ConvertTimeFromUtc(thetanCandidateAdd.LastModified, TimeZoneInfo.FindSystemTimeZoneById("Romance Standard Time"));
           thetansSaved.Add(thetanCandidateAdd.Id, thetanCandidateAdd);
         }
       }
     }
-
-
-    //public IEnumerable<Thetan> GetAllThetans(int afterHours = 1)
-    //{
-    //  string fileDb = thetanConfig.Value.LiteDbFilePath;
-    //  lock (fileDb)
-    //  {
-    //    using (var db = new LiteDatabase(fileDb))
-    //    {
-    //      // Get a collection (or create, if doesn't exist)
-    //      var col = db.GetCollection<Thetan>("thetans");
-
-    //      // Index document using document Name property
-    //      col.EnsureIndex(x => x.Id);
-
-    //      // Use LINQ to query documents (filter, sort, transform)
-    //      return col.Query()
-    //        .OrderByDescending(x => x.LastModified)
-    //        .ToList();
-    //    }
-    //  }
-    //}
-
-  }
-
-
-}
-
-namespace ThetanCore.Extensions
-{
-  public static class Extensions
-  {
-    public static IList<T> Clone<T>(this IList<T> listToClone) where T : ICloneable
-    {
-      return listToClone.Select(item => (T)item.Clone()).ToList();
-    }
   }
 }
-

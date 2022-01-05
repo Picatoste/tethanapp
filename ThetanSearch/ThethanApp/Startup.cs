@@ -46,7 +46,9 @@ namespace ThethanApp
       services.AddSingleton<IRoiProfitServices, RoiProfitServices>();
       services.AddSingleton<IThetanProvider, ThetanProvider>();
       services.AddSingleton<IThetanServices, ThetanServices>();
-      
+      services.AddSingleton<IThetanRepository, ThetanRepository>();
+      services.AddSingleton<IDictionary<string, Thetan>, ThethanDBDictionary>();
+
       //services.AddHostedService<ThetanHostedService>();
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

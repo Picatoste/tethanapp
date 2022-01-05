@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ThetanCore.Interfaces
+﻿namespace ThetanCore.Interfaces
 {
   public class SMTPConfig
   {
@@ -21,7 +17,7 @@ namespace ThetanCore.Interfaces
 
   public class ThetanConfig
   {
-    public string LiteDbFilePath { get; set; }
+    public string ConnectionStringLiteDB { get; set; }
   }
 
   public class ThetanHostedServiceConfig

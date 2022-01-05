@@ -25,4 +25,11 @@
     <Folder Include="wwwroot\img\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Update="Thetans.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

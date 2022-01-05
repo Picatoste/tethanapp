@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.Linq;
+﻿using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using MailKit.Security;
-using MailKit.Net.Smtp;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Options;
 using ThetanCore.Interfaces;
 
 namespace ThetanCore
@@ -98,19 +96,6 @@ namespace ThetanCore
         mre.Set();
       }
       return true;
-    }
-    public class ThetanComparer : EqualityComparer<Thetan>
-    {
-      public override bool Equals(Thetan x, Thetan y)
-      {
-        return x.Id == y.Id;
-      }
-
-      public override int GetHashCode(Thetan obj)
-      {
-        if (obj == null) return 0;
-        return obj.LinkMarket.GetHashCode() ^ obj.Id.GetHashCode();
-      }
     }
   }
 }

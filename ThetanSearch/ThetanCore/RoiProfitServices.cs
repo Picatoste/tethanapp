@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ThetanSearch;
 
 namespace ThetanCore
 {
@@ -52,19 +50,29 @@ namespace ThetanCore
     }
     private ROIProfit CreateROIProfit(Thetan thetan, WinRateType rate, IDictionary<string, double> convertCurrency)
     {
-      var totalWinBattles = Convert.ToInt32(thetan.BattleCap * ((double)rate / 10));
-      var totalLoseBattles = thetan.BattleCap - totalWinBattles;
-      double revenueWin = totalWinBattles * (HTCReward_Win + HTCReward_WinBonus[thetan.Rarity]) * convertCurrency["thetan-coin"];
-      double revenueLose = totalLoseBattles * HTCReward_Lose  * convertCurrency["thetan-coin"];
-      double revenueTotal = revenueWin + revenueLose;
+      double totalWinBattles = Convert.ToInt32(thetan.BattleCap * ((double)rate / 10));
+      double totalLoseBattles = thetan.BattleCap - totalWinBattles;
+      double totalTHCWin = totalWinBattles * (HTCReward_Win + HTCReward_WinBonus[thetan.Rarity]);
+      double revenueWin = totalTHCWin * convertCurrency["thetan-coin"];
+
+      double totalTHCLose = totalLoseBattles * HTCReward_Lose;
+      double revenueLose = totalTHCLose * convertCurrency["thetan-coin"];
+
+      double totalTHC = totalTHCWin + totalTHCLose;
+      double claimFee = (totalTHC * 0.04) * convertCurrency["thetan-coin"];
+
+      double revenueTotal = revenueWin + revenueLose ;
+      double revenueTotalWithClaimFee = revenueTotal - claimFee;
+
       double price = thetan.Price * convertCurrency["wbnb"];
-      double totalProfit = revenueTotal - price;
+      double totalProfit = (revenueTotal - price);
+      double totalProfitWithClaimFee = (revenueTotal - price) - claimFee;
       return new ROIProfit()
       {
         WinRate = rate,
-        IsPositive = totalProfit >= 0,
-        TotalRevenue = revenueWin + revenueLose,
-        TotalProfit = totalProfit,
+        IsPositive = totalProfitWithClaimFee >= 0,
+        TotalRevenue = revenueTotalWithClaimFee,
+        TotalProfit = totalProfitWithClaimFee,
         
       };
     }
