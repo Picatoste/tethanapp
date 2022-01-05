@@ -4,6 +4,6 @@ namespace ThetanCore
 {
   public interface IThetanServices
   {
-    IEnumerable<Thetan> GetThetans();
+    IEnumerable<Thetan> GetAllThetans(int afterHours = 1);
   }
 }

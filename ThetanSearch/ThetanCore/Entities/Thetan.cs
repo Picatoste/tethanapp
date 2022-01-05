@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ThetanCore
 {
-  public class Thetan
+  [Serializable]
+  public class Thetan : ICloneable
   {
     public String Id { get; set; }
     public String Name { get; set; }
@@ -19,5 +22,20 @@ namespace ThetanCore
     public DateTime Created { get; set; }
     public DateTime LastModified { get; set; }
     public double Roi50PerCent { get; set; }
+
+    public object Clone()
+    {
+      using (MemoryStream stream = new MemoryStream())
+      {
+        if (this.GetType().IsSerializable)
+        {
+          BinaryFormatter formatter = new BinaryFormatter();
+          formatter.Serialize(stream, this);
+          stream.Position = 0;
+          return formatter.Deserialize(stream);
+        }
+        return null;
+      }
+    }
   }
 }

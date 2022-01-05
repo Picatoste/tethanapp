@@ -29,16 +29,23 @@ namespace ThetanCore
     {
       foreach (var thetan in thetans)
       {
-        IList<ROIProfit> roiProfit = new List<ROIProfit>();
-        foreach (WinRateType rate in Enum.GetValues(typeof(WinRateType)))
-        {
-          roiProfit.Add(CreateROIProfit(thetan, rate, convertCurrency));
-        }
-        thetan.ROIProfit = roiProfit;
-        thetan.Roi50PerCent = CalculaRoiByWinRate(thetan, WinRateType.PerCent50, convertCurrency);
+        FillRoi(thetan, convertCurrency);
       }
 
     }
+
+    public void FillRoi(Thetan thetan, IDictionary<string, double> convertCurrency)
+    {
+
+      IList<ROIProfit> roiProfit = new List<ROIProfit>();
+      foreach (WinRateType rate in Enum.GetValues(typeof(WinRateType)))
+      {
+        roiProfit.Add(CreateROIProfit(thetan, rate, convertCurrency));
+      }
+      thetan.ROIProfit = roiProfit;
+      thetan.Roi50PerCent = CalculaRoiByWinRate(thetan, WinRateType.PerCent50, convertCurrency);
+    }
+
     private double CalculaRoiByWinRate(Thetan thetan, WinRateType rate, IDictionary<string, double> convertCurrency)
     {
       return (thetan.ROIProfit.FirstOrDefault(x => x.WinRate == rate).TotalRevenue * 100) / (thetan.Price * convertCurrency["wbnb"]);

@@ -1,10 +1,29 @@
-﻿namespace ThetanCore
+﻿using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+namespace ThetanCore
 {
-  public class ROIProfit
+  [Serializable]
+  public class ROIProfit : ICloneable
   {
     public bool IsPositive { get; set; }
     public WinRateType WinRate { get; set; }
     public double TotalRevenue { get; set; }
     public double TotalProfit { get; set; }
+    public object Clone()
+    {
+      using (MemoryStream stream = new MemoryStream())
+      {
+        if (this.GetType().IsSerializable)
+        {
+          BinaryFormatter formatter = new BinaryFormatter();
+          formatter.Serialize(stream, this);
+          stream.Position = 0;
+          return formatter.Deserialize(stream);
+        }
+        return null;
+      }
+    }
   }
 }

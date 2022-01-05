@@ -1,5 +1,8 @@
-﻿namespace ThetanCore
+﻿using System;
+
+namespace ThetanCore
 {
+  [Serializable]
   public enum Rarity
   {
     Common = 0,

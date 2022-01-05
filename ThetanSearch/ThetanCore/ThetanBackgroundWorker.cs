@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Collections.Generic;
-using LiteDB;
+//using LiteDB;
 using ThetanSearch;
 using AutoMapper;
 using ThethanCore.Mappers;
@@ -15,6 +15,9 @@ namespace ThetanCore
 {
   public class ThetanHostedService : IHostedService, IDisposable
   {
+
+    private readonly object notifyLock = new object();
+
     private readonly Task _completedTask = Task.CompletedTask;
     private int executionCount = 0;
     private Timer _timer = null;
@@ -29,7 +32,6 @@ namespace ThetanCore
     private readonly IOptions<ThetanConfig> thetanConfig;
     private readonly IOptions<ThetanEmailNotificationConfig> thetanEmailNotificationConfig;
 
-    //private readonly IOptions<ThetanHostedServiceConfig> thetanHostedServiceConfig;
     private readonly IMapper mapper;
 
     public ThetanHostedService(
@@ -50,7 +52,6 @@ namespace ThetanCore
       this.thetanNotification = thetanNotification;
       this.thetanConfig = thetanConfig;
       this.thetanEmailNotificationConfig = thetanEmailNotificationConfig;
-      //this.thetanHostedServiceConfig = thetanHostedServiceConfig;
 
       var config = new MapperConfiguration(cfg => {
         cfg.CreateMap<ThetanData, Thetan>();
@@ -80,15 +81,17 @@ namespace ThetanCore
 
       var convertCurrency = this.tokenService.GetListCurrencyToken(new[] { "thetan-coin", "wbnb" });
       rOIServices.FillRoi(thetansToInsert, convertCurrency);
-
-      this.thetanNotification.Notify(thetansToInsert, this.thetanEmailNotificationConfig.Value.EmailTo, (Thetan thetan) =>
+      lock (notifyLock)
       {
-        return thetan.PriceConverted >= 5F
-            && thetan.PriceConverted <= 75F
-            && thetan.Roi50PerCent >= 150
-            && thetan.ROIProfit.First(x => x.WinRate == WinRateType.PerCent30).IsPositive;
-      });
-      SetThetans(thetansToInsert);
+        this.thetanNotification.Notify(thetansToInsert, this.thetanEmailNotificationConfig.Value.EmailTo, (Thetan thetan) =>
+        {
+          return thetan.PriceConverted >= 5F
+              && thetan.PriceConverted <= 75F
+              && thetan.Roi50PerCent >= 150
+              && thetan.ROIProfit.First(x => x.WinRate == WinRateType.PerCent30).IsPositive;
+        });
+      }
+      //SetThetans(thetansToInsert);
       
     }
 
@@ -104,24 +107,24 @@ namespace ThetanCore
       _timer?.Dispose();
     }
 
-    public void SetThetans(IEnumerable<Thetan> thetans, int afterHours = 1)
-    { 
-      string fileDb = this.thetanConfig.Value.LiteDbFilePath;
-      lock (fileDb)
-      {
-        using (var db = new LiteDatabase(fileDb))
-        {
-          // Get a collection (or create, if doesn't exist)
-          var col = db.GetCollection<Thetan>("thetans");
+    //public void SetThetans(IEnumerable<Thetan> thetans, int afterHours = 1)
+    //{ 
+    //  string fileDb = this.thetanConfig.Value.LiteDbFilePath;
+    //  lock (fileDb)
+    //  {
+    //    using (var db = new LiteDatabase(fileDb))
+    //    {
+    //      // Get a collection (or create, if doesn't exist)
+    //      var col = db.GetCollection<Thetan>("thetans");
 
-          // Index document using document Name property
-          col.EnsureIndex(x => x.Id);
-          col.DeleteMany(x => 
-            x.LastModified.ToUniversalTime().AddHours(afterHours) < DateTime.UtcNow
-          );
-          col.Upsert(thetans);
-        }
-      }
-    }
+    //      // Index document using document Name property
+    //      col.EnsureIndex(x => x.Id);
+    //      col.DeleteMany(x => 
+    //        x.LastModified.ToUniversalTime().AddHours(afterHours) < DateTime.UtcNow
+    //      );
+    //      col.Upsert(thetans);
+    //    }
+    //  }
+    //}
   }
 }

@@ -28,7 +28,7 @@ namespace ThethanCore.Mappers
       .ForMember(dest => dest.avatarBig, opt => opt.MapFrom(src => $"https://assets.thetanarena.com/{src.imageFull}"))
       .ForMember(dest => dest.LinkMarket, opt => opt.MapFrom(src => $"https://marketplace.thetanarena.com/item/{src.refId}"))
       .ForMember(dest => dest.Created, opt => opt.MapFrom(src => src.created))
-      .ForMember(dest => dest.LastModified, opt => opt.MapFrom(src => src.lastModified));
+      .ForMember(dest => dest.LastModified, opt => opt.MapFrom(src => src.lastModified.ToUniversalTime()));
     }
   }
 }

@@ -2,20 +2,75 @@
 @model IEnumerable<ThethanApp.Models.ThetanModel>
 
 @{
-  ViewData["Title"] = "Thetan";
+  ViewData["Title"] = "Thetan Search";
 }
 
 <h1>Thetan</h1>
 
-<p>
-  @using (Html.BeginForm("Thetan", "Controller", FormMethod.Post))
-  {
-    <button type="submit" class="btn btn-primary">UPDATE</button>
-  }
-</p>
-<div class="table-responsive">
-  <div>
-    <strong>Total results: @Model.Count() thetans in last hour. Last search  @ViewBag.LastUpdate.</strong>
+<div class="table-responsive" style="overflow: hidden;">
+  <div id="card_filter" class="card" style="width: 90%;">
+    <div class="card-body collapse" id="card_body">
+      <div class="row">
+        <div class="col-md border-right">
+          <div class="clear">Range price filter</div>
+          <div class="selector" style="width: 100%;">
+            <div class="price-slider">
+              <div id="slider-range" class="ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content">
+                <div class="ui-slider-range ui-corner-all ui-widget-header"></div>
+                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default"></span>
+              </div>
+              <span id="min-price" data-currency="$" class="slider-price">0</span>
+              <span class="seperator">-</span>
+              <span id="max-price" data-currency="$" data-max="1500" class="slider-price">3500 +</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="clear">Tier ROI filter</div>
+          @foreach (var tier in Enums.GetValues<TierROI>().OrderByDescending(x => x).Except(new TierROI[] { TierROI.Error }).ToList())
+          {
+            <div class="left custom-control custom-checkbox image-checkbox" style="margin:5px;">
+              <input type="checkbox" class="custom-control-input" data-tier-roi="@(tier.ToString())" id="tierFilter_@(tier.ToString())">
+              <label class="custom-control-label" for="tierFilter_@(tier.ToString())">
+                <span class="left" style="width:30px; margin-left:5px;">
+                  <svg viewBox="0 0 10 10" class="img-fluid">
+                    <g>
+                      <rect x="0" y="0" width="10" height="10" fill="@(tier.AsString(EnumFormat.Description))"></rect>
+                      <text x="5" y="8" class="percentage">@(tier.ToString())</text>
+                    </g>
+                  </svg>
+                </span>
+              </label>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <div class="row">
+        <div class="col-md">
+          <span id="filter_text"></span>
+          <div>
+            <button type="button" class="btn btn-outline-secondary btn-sm" style="float:left; font-size: 0.7em; margin: 5px;" data-toggle="collapse" data-target="#card_body" aria-expanded="true" aria-controls="card_body">Open Filters</button>
+          </div>
+        </div>
+        <div class="col-md">
+          <div class="row">
+            <div class="col-md">
+              <strong>@Model.Count() total thetans downloaded on last hour. Last update  @ViewBag.LastUpdate.</strong>
+            </div>
+            <div class="col-md-4">
+              @using (Html.BeginForm("Thetan", "Controller", FormMethod.Post))
+              {
+                <button type="submit" style="margin-left:10px;" class="btn btn-primary btn-lg">UPDATE</button>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
   </div>
   <div class="container">
     @{
@@ -23,62 +78,62 @@
     }
     @foreach (var thetan in Model)
     {
-    <div class="card">
-      <div class="card-body">
-        <div class="clear rigth" style="font-size:0.7em;">
-          #@(i++)
-        </div>
-        <div class="left">
-          <img class="rounded border" style="border-color:@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
-        </div>
-        <div class="left" style="width:30px; margin:3px;">
-          <svg viewBox="0 0 10 10">
-            <g>
-              <rect x="0" y="0" width="10" height="10" fill="@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description))"></rect>
-              <text x="5" y="8" class="percentage">@((thetan.Roi50PerCentGrade).ToString())</text>
-            </g>
-          </svg>
-        </div>
-        <div class="left nowrap" style="font-size:1.1em; margin: 5px;">
-          <strong>@Html.DisplayFor(modelItem => thetan.Name)</strong>
-        </div>
-        <div class="clear left nowrap">
-          <div class="nowrap">
-            <strong style="font-size:0.8em">@Html.DisplayNameFor(model => model.Roi50PerCent) : </strong> @((thetan.Roi50PerCent).ToString("0"))%
+      <div id="card_@i" style="display:none;" class="card card-thetan" data-tier-roi="@((thetan.Roi50PerCentGrade).ToString())" data-price="@(thetan.PriceConverted)">
+        <div class="card-body">
+          <div class="clear rigth" style="font-size:0.7em;">
+            #@(i++)
           </div>
-          <div class="nowrap">
-            <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCap) : </strong>@Html.DisplayFor(modelItem => thetan.BattleCap)
+          <div class="left">
+            <img class="rounded border" style="border-color:@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description)) !important" width="100" height="100" src="@Html.DisplayFor(modelItem => thetan.avatarSmall)" alt="Image" />
           </div>
-          <div class="nowrap">
-            <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCapMax) : </strong> @(thetan.BattleCapMax - thetan.BattleCap) / @Html.DisplayFor(modelItem => thetan.BattleCapMax)
+          <div class="left" style="width:30px; margin:3px;">
+            <svg viewBox="0 0 10 10">
+              <g>
+                <rect x="0" y="0" width="10" height="10" fill="@(((TierROI)thetan.Roi50PerCentGrade).AsString(EnumFormat.Description))"></rect>
+                <text x="5" y="8" class="percentage">@((thetan.Roi50PerCentGrade).ToString())</text>
+              </g>
+            </svg>
           </div>
-          <div class="nowrap">
-            <div class="margin-5">
-              <button type="button" class="btn btn-primary" onclick="window.open('@Html.DisplayFor(modelItem => thetan.LinkMarket)')"> @Html.DisplayNameFor(model => model.LinkMarket)</button>
-              <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseDetails_@i" aria-expanded="false" aria-controls="collapseDetails_@i">ROI Details</button>
+          <div class="left nowrap" style="font-size:1.1em; margin: 5px;">
+            <strong>@Html.DisplayFor(modelItem => thetan.Name)</strong>
+          </div>
+          <div class="clear left nowrap">
+            <div class="nowrap">
+              <strong style="font-size:0.8em">@Html.DisplayNameFor(model => model.Roi50PerCent) : </strong> @((thetan.Roi50PerCent).ToString("0"))%
+            </div>
+            <div class="nowrap">
+              <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCap) : </strong>@Html.DisplayFor(modelItem => thetan.BattleCap)
+            </div>
+            <div class="nowrap">
+              <strong style="font-size:0.8em"><img src="~/img/icon_battles.png" width="20" />@Html.DisplayNameFor(model => model.BattleCapMax) : </strong> @(thetan.BattleCapMax - thetan.BattleCap) / @Html.DisplayFor(modelItem => thetan.BattleCapMax)
+            </div>
+            <div class="nowrap">
+              <div class="margin-5">
+                <button type="button" class="btn btn-primary" onclick="window.open('@Html.DisplayFor(modelItem => thetan.LinkMarket)')"> @Html.DisplayNameFor(model => model.LinkMarket)</button>
+                <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#collapseDetails_@i" aria-expanded="true" aria-controls="collapseDetails_@i">ROI Details</button>
+              </div>
             </div>
           </div>
-          </div>
         </div>
-      <div class="card-footer">
-        <div class="right" style="margin:10px; display:inline-block;">
-          <div style="font-size:0.6em">
-            @thetan.LastModifiedAgo
+        <div class="card-footer">
+          <div class="right" style="margin:10px; display:inline-block;">
+            <div style="font-size:0.6em">
+              @thetan.LastModifiedAgo
+            </div>
+            <div>
+              <strong style="font-size:1.2em">$@((thetan.PriceConverted).ToString("0.###"))</strong> (@((thetan.Price).ToString("0.###"))  WBNB)
+            </div>
           </div>
-          <div>
-            <strong style="font-size:1.2em">$@((thetan.PriceConverted).ToString("0.###"))</strong> (@((thetan.Price).ToString("0.###"))  WBNB)
-          </div>
-        </div>
-        <div class="right" style="margin:10px; display:inline;">
-          <div class="collapse" id="collapseDetails_@i">
-            @foreach (var roi in thetan.ROIProfit)
-            {
-              Html.RenderPartial("_RoiProfitByWinRatePartial", roi);
-            }
+          <div class="right" style="margin:10px; display:inline;">
+            <div class="collapse" id="collapseDetails_@i">
+              @foreach (var roi in thetan.ROIProfit)
+              {
+                Html.RenderPartial("_RoiProfitByWinRatePartial", roi);
+              }
+            </div>
           </div>
         </div>
       </div>
-    </div>
     }
   </div>
 </div>

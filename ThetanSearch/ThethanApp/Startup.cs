@@ -47,7 +47,7 @@ namespace ThethanApp
       services.AddSingleton<IThetanProvider, ThetanProvider>();
       services.AddSingleton<IThetanServices, ThetanServices>();
       
-      services.AddHostedService<ThetanHostedService>();
+      //services.AddHostedService<ThetanHostedService>();
 
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

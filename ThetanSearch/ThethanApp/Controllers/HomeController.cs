@@ -43,7 +43,7 @@ namespace ThethanApp.Controllers
       var mapper = config.CreateMapper();
 
       ViewBag.LastUpdate = DateTime.Now.ToLongTimeString();
-      return View(mapper.Map<IEnumerable<Thetan>, IEnumerable<ThetanModel>>(thetanServices.GetThetans()));
+      return View(mapper.Map<IEnumerable<Thetan>, IEnumerable<ThetanModel>>(thetanServices.GetAllThetans()));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

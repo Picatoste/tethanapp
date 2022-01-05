@@ -51,17 +51,25 @@ namespace ThetanSearch
     private double? GetTokenPriceBySlug(string slug, string currency = "USD")
     {
       double price = 0;
-      var request = new RestRequest("cryptocurrency/quotes/latest", Method.GET);
-      request.AddHeader("X-CMC_PRO_API_KEY", "f32714eb-4198-49ec-af3e-6dceab0dfb75");
-      request.AddQueryParameter("slug", slug);
-      request.AddQueryParameter("convert", currency);
-      var response = new RestClient(BaseUrl).Execute(request);
-      if (response.IsSuccessful)
+      try
       {
-        var tokenPrice = JObject.Parse(response.Content);
-        double.TryParse(tokenPrice["data"].First?.First?["quote"][currency]["price"].ToString(), out price);
+        var request = new RestRequest("cryptocurrency/quotes/latest", Method.GET);
+        request.AddHeader("X-CMC_PRO_API_KEY", "f32714eb-4198-49ec-af3e-6dceab0dfb75");
+        request.AddQueryParameter("slug", slug);
+        request.AddQueryParameter("convert", currency);
+        var response = new RestClient(BaseUrl).Execute(request);
+        if (response.IsSuccessful)
+        {
+          var tokenPrice = JObject.Parse(response.Content);
+          double.TryParse(tokenPrice["data"].First?.First?["quote"][currency]["price"].ToString(), out price);
+        }
+        return price;
+
       }
-      return price;
+      catch
+      {
+        return distTokenPriceData.FirstOrDefault(x => x.Slug == slug && x.Currency == currency)?.Price;
+      }
     }
 
     private class TokenPriceData
